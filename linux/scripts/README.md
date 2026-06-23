@@ -11,16 +11,16 @@ Common files remain at the repository root:
 
 Do not duplicate common prompt, profile, or skill files under this directory.
 
-## Codex Desktop Automation Prompt
+## Automation Prompt
 
 Use this as the Linux automation task, adjusting repo names and paths.
 
-This prompt assumes PowerShell 7 is available as `pwsh`, the automation scripts are installed under `$HOME/codex-tools`, and GitHub authentication is available through `GH_TOKEN` or the GitHub CLI.
+This prompt assumes the remote VM automation scripts are installed under `/home/codex-auto/automation/scripts`, and the target project has an environment file under `/home/codex-auto/automation/state`.
 
 ```text
 Use the issue-to-pr-automation skill.
 
-Run exactly one issue-to-PR cycle.
+Run exactly one issue-to-PR cycle in this remote VM project.
 
 Important:
 - Do not call `codex exec`.
@@ -29,18 +29,26 @@ Important:
 - Process only one issue.
 - Keep all changes issue-scoped.
 - Do not perform unrelated refactors.
+- Do not use local git commands that write `.git` metadata.
+- Use only the trusted automation scripts for GitHub issue/PR/CI state changes.
+
+Environment file:
+
+/home/codex-auto/automation/state/PROJECT.env
 
 Step 1 — Prepare
 
 Run:
 
-pwsh -File "$HOME/codex-tools/codex-prepare-next-ready-issue.ps1" -Username "OWNER" -Repo "REPO" -Base main -Remote origin -GhConfigDir ".codex-run/gh-config"
+/home/codex-auto/automation/scripts/with-env.sh /home/codex-auto/automation/state/PROJECT.env /home/codex-auto/automation/scripts/prepare-next-ready-issue.sh --owner OWNER --repo REPO --base main --remote origin
 
 If it prints NO_READY_ISSUE, stop.
 
 Step 2 — Plan
 
-Read `.codex-run/current/planner.md`.
+Read:
+
+.codex-run/current/planner.md
 
 Write the plan to:
 
@@ -50,33 +58,32 @@ Step 3 — Render implementer prompt
 
 Run:
 
-pwsh -File "$HOME/codex-tools/codex-finalize-current-issue.ps1" -Mode RenderImplementerPrompt
+/home/codex-auto/automation/scripts/with-env.sh /home/codex-auto/automation/state/PROJECT.env /home/codex-auto/automation/scripts/finalize-current-issue.sh --mode RenderImplementerPrompt
 
 Step 4 — Implement
 
-Read `.codex-run/current/implementer.md`.
+Read:
+
+.codex-run/current/implementer.md
 
 Implement the issue directly in the workspace.
 
-After implementing the issue, write a concise Git commit message to:
+Also write a concise commit message to:
 
 .codex-run/current/commit-message.txt
 
-Rules for the commit message:
+Commit message rules:
 - One short first line.
-- Prefer imperative mood.
-- Mention the affected area or behavior.
-- Do not include markdown.
-- Do not include quotes around the message.
-
-Example:
-Show item names in expiring entry lists
+- Imperative mood.
+- Mention the affected behavior or area.
+- No markdown.
+- No quotes around the message.
 
 Step 5 — Local check
 
 Run:
 
-pwsh -File "$HOME/codex-tools/codex-finalize-current-issue.ps1" -Mode LocalCheck
+/home/codex-auto/automation/scripts/with-env.sh /home/codex-auto/automation/state/PROJECT.env /home/codex-auto/automation/scripts/finalize-current-issue.sh --mode LocalCheck
 
 If it prints LOCAL_CHECK_FAILED:
 - Read `.codex-run/current/local-repair.md`.
@@ -88,7 +95,7 @@ Step 6 — PR and CI
 
 Run:
 
-pwsh -File "$HOME/codex-tools/codex-finalize-current-issue.ps1" -Mode PrAndCi
+/home/codex-auto/automation/scripts/with-env.sh /home/codex-auto/automation/state/PROJECT.env /home/codex-auto/automation/scripts/finalize-current-issue.sh --mode PrAndCi
 
 If it prints CI_FAILED:
 - Read `.codex-run/current/ci-repair.md`.
@@ -108,7 +115,7 @@ When PrAndCi prints CI_PASSED:
 If verification fails:
 - Run:
 
-pwsh -File "$HOME/codex-tools/codex-finalize-current-issue.ps1" -Mode RenderVerificationRepair
+/home/codex-auto/automation/scripts/with-env.sh /home/codex-auto/automation/state/PROJECT.env /home/codex-auto/automation/scripts/finalize-current-issue.sh --mode RenderVerificationRepair
 
 - Read `.codex-run/current/verification-repair.md`.
 - Fix only the verifier gaps.
@@ -120,11 +127,11 @@ Step 8 — Mark ready
 
 When verification passes, run:
 
-pwsh -File "$HOME/codex-tools/codex-mark-current-issue.ps1" -Status ReadyForReview
+/home/codex-auto/automation/scripts/with-env.sh /home/codex-auto/automation/state/PROJECT.env /home/codex-auto/automation/scripts/mark-current-issue.sh --status ReadyForReview
 
 If you must give up, run:
 
-pwsh -File "$HOME/codex-tools/codex-mark-current-issue.ps1" -Status Blocked -Message "Automation could not complete after repair attempts."
+/home/codex-auto/automation/scripts/with-env.sh /home/codex-auto/automation/state/PROJECT.env /home/codex-auto/automation/scripts/mark-current-issue.sh --status Blocked --message "Automation could not complete after repair attempts."
 
 Rules:
 - Never merge to main.

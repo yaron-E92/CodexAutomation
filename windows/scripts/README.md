@@ -11,7 +11,7 @@ Common files remain at the repository root:
 
 Do not duplicate common prompt, profile, or skill files under this directory.
 
-## Codex Desktop Automation Prompt
+## Automation Prompt
 
 Use this as the Windows automation task, adjusting repo names and paths.
 

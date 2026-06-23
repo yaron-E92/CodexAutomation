@@ -430,7 +430,7 @@ codex:blocked
 
 ---
 
-## 10. Codex Desktop automation prompts
+## 10. Automation prompts
 
 The automation prompt contains OS-specific command paths, so keep prompt copies with the OS-specific scripts:
 
