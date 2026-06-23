@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-AUTOMATION_ROOT="${AUTOMATION_ROOT:-/home/codex-auto/automation}"
+AUTOMATION_ROOT="${AUTOMATION_ROOT:-~/automation}"
 PROMPT_DIR="${PROMPT_DIR:-$AUTOMATION_ROOT/prompts}"
 PROFILES_PATH="${PROFILES_PATH:-$AUTOMATION_ROOT/codex-profiles.json}"
 require_cmd(){ command -v "$1" >/dev/null 2>&1 || { echo "ERROR: missing command: $1" >&2; exit 127; }; }

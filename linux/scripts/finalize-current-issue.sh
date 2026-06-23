@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-source "${AUTOMATION_ROOT:-/home/codex-auto/automation}/scripts/lib.sh"
+source "${AUTOMATION_ROOT:-~/automation}/scripts/lib.sh"
 MODE=""; LOCAL_CHECK_TIMEOUT="${LOCAL_CHECK_TIMEOUT:-45m}"; CI_TIMEOUT="${CI_TIMEOUT:-45m}"
 while [[ $# -gt 0 ]]; do case "$1" in --mode) MODE="$2"; shift 2;; *) echo "Unknown arg: $1" >&2; exit 2;; esac; done
 [[ -n "$MODE" ]] || { echo "Missing --mode" >&2; exit 2; }

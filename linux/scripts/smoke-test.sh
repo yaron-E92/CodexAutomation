@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-source "${AUTOMATION_ROOT:-/home/codex-auto/automation}/scripts/lib.sh"
-REPO_PATH="${1:-${REPO_PATH:-/home/codex-auto/repos}}"; REPO_FULL="${2:-${GITHUB_OWNER:-}/${GITHUB_REPO:-}}"
+source "${AUTOMATION_ROOT:-~/automation}/scripts/lib.sh"
+REPO_PATH="${1:-${REPO_PATH:-~/repos}}"; REPO_FULL="${2:-${GITHUB_OWNER:-}/${GITHUB_REPO:-}}"
 for cmd in codex git gh dotnet jq rg ssh; do require_cmd "$cmd"; done
 init_gh_env
 echo "== Tools =="; codex --version; git --version; gh --version; dotnet --version; jq --version; rg --version

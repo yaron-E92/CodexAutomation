@@ -20,7 +20,7 @@ set -a
 source "$ENV_FILE"
 set +a
 
-AUTOMATION_ROOT="${AUTOMATION_ROOT:-/home/codex-auto/automation}"
+AUTOMATION_ROOT="${AUTOMATION_ROOT:-~/automation}"
 
 if [[ -n "${KEEPASS_DB:-}" ]]; then
   KEEPASS_CLI="${KEEPASS_CLI:-keepassxc-cli}"

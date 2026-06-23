@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-AUTOMATION_ROOT="${AUTOMATION_ROOT:-/home/codex-auto/automation}"
+AUTOMATION_ROOT="${AUTOMATION_ROOT:-~/automation}"
 LOG_DIR="$AUTOMATION_ROOT/logs"; STATE_DIR="$AUTOMATION_ROOT/state"; mkdir -p "$LOG_DIR" "$STATE_DIR"
 ENV_FILE="${1:-${ENV_FILE:-$STATE_DIR/default.env}}"
 [[ -f "$ENV_FILE" ]] || { echo "Environment file not found: $ENV_FILE" >&2; exit 2; }

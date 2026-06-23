@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-source "${AUTOMATION_ROOT:-/home/codex-auto/automation}/scripts/lib.sh"
+source "${AUTOMATION_ROOT:-~/automation}/scripts/lib.sh"
 STATUS=""; MESSAGE=""
 while [[ $# -gt 0 ]]; do case "$1" in --status) STATUS="$2"; shift 2;; --message) MESSAGE="$2"; shift 2;; *) echo "Unknown arg: $1" >&2; exit 2;; esac; done
 [[ -n "$STATUS" ]] || { echo "Missing --status" >&2; exit 2; }

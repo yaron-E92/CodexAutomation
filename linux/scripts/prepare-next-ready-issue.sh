@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-source "${AUTOMATION_ROOT:-/home/codex-auto/automation}/scripts/lib.sh"
+source "${AUTOMATION_ROOT:-~/automation}/scripts/lib.sh"
 OWNER="${GITHUB_OWNER:-}"; REPO="${GITHUB_REPO:-}"; BASE="${BASE_BRANCH:-main}"; REMOTE="${REMOTE_NAME:-origin}"; ISSUE="${ISSUE_NUMBER:-}"; PROFILES="${PROFILES:-}"; LOCAL_CHECK="${LOCAL_CHECK:-}"; STACK_CONTEXT="${STACK_CONTEXT:-}"; FORCE_CURRENT="${FORCE_CURRENT:-false}"
 while [[ $# -gt 0 ]]; do case "$1" in --owner) OWNER="$2"; shift 2;; --repo) REPO="$2"; shift 2;; --base) BASE="$2"; shift 2;; --remote) REMOTE="$2"; shift 2;; --issue) ISSUE="$2"; shift 2;; --profiles) PROFILES="$2"; shift 2;; --local-check) LOCAL_CHECK="$2"; shift 2;; --stack-context) STACK_CONTEXT="$2"; shift 2;; --force-current) FORCE_CURRENT=true; shift;; *) echo "Unknown arg: $1" >&2; exit 2;; esac; done
 require_cmd gh; require_cmd jq; require_cmd sha256sum; require_cmd python3; init_gh_env
