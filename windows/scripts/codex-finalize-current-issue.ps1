@@ -234,6 +234,8 @@ function New-GitHubApiCommit {
         if ($status -eq "deleted") {
             $treeItems += @{
                 path = $path
+                mode = "100644"
+                type = "blob"
                 sha = $null
             }
 
