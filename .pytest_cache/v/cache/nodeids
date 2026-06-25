@@ -7,7 +7,6 @@
   "tests/test_command_group_recommendations.py::CommandGroupRecommendationTests::test_ci_manual_reference_remains_conditional_reference_only",
   "tests/test_command_group_recommendations.py::CommandGroupRecommendationTests::test_detect_repo_facts_records_maui_helper_scripts",
   "tests/test_command_group_recommendations.py::CommandGroupRecommendationTests::test_docs_architecture_boundary_issue_does_not_recommend_maui_groups",
-  "tests/test_command_group_recommendations.py::CommandGroupRecommendationTests::test_docs_surface_mentions_do_not_recommend_maui_groups",
   "tests/test_command_group_recommendations.py::CommandGroupRecommendationTests::test_dotnet_solution_group_restores_builds_and_tests_solutions",
   "tests/test_command_group_recommendations.py::CommandGroupRecommendationTests::test_generic_issue_uses_conservative_default_recommendations",
   "tests/test_command_group_recommendations.py::CommandGroupRecommendationTests::test_inventory_prompt_does_not_recommend_maui_groups",
