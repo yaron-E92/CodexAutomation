@@ -9,9 +9,9 @@ function Show-Usage {
 Create structured GitHub issues from rough descriptions.
 
 Examples:
-  windows\scripts\create-issues-from-description.ps1 --description "Add dry-run mode to AutoDev" --repo owner/AutoDev
+  windows\scripts\create-issues-from-description.ps1 --description "Add dry-run mode to AutoDev" --repo owner/AutoDev --model devstral-small2-12k
   windows\scripts\create-issues-from-description.ps1 --description-file ideas.md --repo-map repo-map.json --dry-run
-  windows\scripts\create-issues-from-description.ps1 --description "Fix AutoDev docs" --repo owner/AutoDev --create --yes
+  windows\scripts\create-issues-from-description.ps1 --description "Fix AutoDev docs" --repo owner/AutoDev --model devstral-small2-12k --create --yes
 "@
 }
 

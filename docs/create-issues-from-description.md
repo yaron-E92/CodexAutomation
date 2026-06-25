@@ -1,6 +1,6 @@
 # Create Issues From Description
 
-AutoDev includes a cross-platform helper for turning rough task ideas into structured GitHub issues.
+AutoDev includes a cross-platform helper for turning rough task ideas into structured GitHub issues. The helper sends the rough description to a configured local Ollama model, expects structured JSON issue proposals back, then dry-runs or creates those issues with `gh`.
 
 The shared logic lives in:
 
@@ -15,6 +15,28 @@ linux/scripts/create-issues-from-description.sh
 windows/scripts/create-issues-from-description.ps1
 ```
 
+## Model Setup
+
+The tool uses Ollama's chat API by default:
+
+```text
+http://localhost:11434/api/chat
+```
+
+The default model is `devstral-small2-12k`, which is intended as the coder model in this repository's local model workflow. Override it with `--model` or `AUTODEV_ISSUE_MODEL`:
+
+```bash
+export AUTODEV_ISSUE_MODEL=devstral-small2-12k
+```
+
+You can also override the API URL:
+
+```bash
+export AUTODEV_OLLAMA_URL=http://localhost:11434/api/chat
+```
+
+The model may return one or more issue proposals for one rough description when the description clearly contains independent tasks.
+
 ## Linux Usage
 
 Run from the repository root:
@@ -22,7 +44,8 @@ Run from the repository root:
 ```bash
 linux/scripts/create-issues-from-description.sh \
   --description "Add dry-run mode to AutoDev issue creation" \
-  --repo owner/AutoDev
+  --repo owner/AutoDev \
+  --model devstral-small2-12k
 ```
 
 Create issues after reviewing the dry-run output:
@@ -31,6 +54,7 @@ Create issues after reviewing the dry-run output:
 linux/scripts/create-issues-from-description.sh \
   --description-file ideas.md \
   --repo owner/AutoDev \
+  --model devstral-small2-12k \
   --create \
   --yes
 ```
@@ -42,7 +66,8 @@ Run from the repository root:
 ```powershell
 windows\scripts\create-issues-from-description.ps1 `
   --description "Add dry-run mode to AutoDev issue creation" `
-  --repo owner/AutoDev
+  --repo owner/AutoDev `
+  --model devstral-small2-12k
 ```
 
 Create issues after reviewing the dry-run output:
@@ -51,6 +76,7 @@ Create issues after reviewing the dry-run output:
 windows\scripts\create-issues-from-description.ps1 `
   --description-file ideas.md `
   --repo owner/AutoDev `
+  --model devstral-small2-12k `
   --create `
   --yes
 ```
@@ -112,7 +138,7 @@ Add retry handling to the issue creation wrapper.
 Document the repo-map format.
 ```
 
-Each parsed description becomes one proposed issue.
+Each parsed description is sent to the model. The model can return one issue or multiple issue proposals for each parsed description.
 
 ## Dry-Run Mode
 
@@ -146,6 +172,6 @@ Created issues are logged to `.codex-run/issue-creation-log.jsonl` by default. O
 - `--create` requires `--yes` for non-interactive creation.
 - Empty and near-empty descriptions are refused.
 - Ambiguous repository matches are refused.
-- More than `--max-issues` descriptions are refused unless `--yes` confirms creation.
-- Re-running the same description with the same creation log skips duplicate creation.
+- More than `--max-issues` issue proposals are refused unless `--yes` confirms creation.
+- Re-running the same description/title pair with the same creation log skips duplicate creation.
 - The wrappers fail clearly if `python` or `gh` is missing.

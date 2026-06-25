@@ -1,7 +1,8 @@
 # AutoDev
 
 A local, user-level automation setup that lets the **Codex desktop app** process GitHub issues into pull requests.
- also includes a helper for turning rough task descriptions into structured GitHub issues. See `docs/create-issues-from-description.md`.
+
+AutoDev also includes a helper for turning rough task descriptions into structured GitHub issues. See `docs/create-issues-from-description.md`.
 
 The final architecture intentionally avoids the traps we hit along the way:
 

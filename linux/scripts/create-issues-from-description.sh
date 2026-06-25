@@ -6,9 +6,9 @@ usage() {
 Create structured GitHub issues from rough descriptions.
 
 Examples:
-  linux/scripts/create-issues-from-description.sh --description "Add dry-run mode to AutoDev" --repo owner/AutoDev
+  linux/scripts/create-issues-from-description.sh --description "Add dry-run mode to AutoDev" --repo owner/AutoDev --model devstral-small2-12k
   linux/scripts/create-issues-from-description.sh --description-file ideas.md --repo-map repo-map.json --dry-run
-  linux/scripts/create-issues-from-description.sh --description "Fix AutoDev docs" --repo owner/AutoDev --create --yes
+  linux/scripts/create-issues-from-description.sh --description "Fix AutoDev docs" --repo owner/AutoDev --model devstral-small2-12k --create --yes
 EOF
 }
 
