@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -292,26 +293,40 @@ def validate_inputs(args: argparse.Namespace, repo: Path) -> None:
 def resolve_provider_configs(args: argparse.Namespace) -> tuple[ModelConfig, ModelConfig]:
     file_config = load_provider_config(args.provider_config)
     defaults = {
-        "reader": {"provider": "command", "model": DEFAULT_READER_MODEL, "timeout_seconds": 600},
-        "coder": {"provider": "command", "model": DEFAULT_CODER_MODEL, "timeout_seconds": 600},
+        "reader": default_ollama_command_config(DEFAULT_READER_MODEL),
+        "coder": default_ollama_command_config(DEFAULT_CODER_MODEL),
     }
     reader = resolve_model_config(
         "reader",
         defaults=defaults["reader"],
         file_config=file_config,
-        cli_values=provider_cli_values(args, "reader"),
+        cli_values=provider_cli_values(args, "reader", file_config, defaults["reader"]),
     )
     coder = resolve_model_config(
         "coder",
         defaults=defaults["coder"],
         file_config=file_config,
-        cli_values=provider_cli_values(args, "coder"),
+        cli_values=provider_cli_values(args, "coder", file_config, defaults["coder"]),
     )
     return reader, coder
 
 
-def provider_cli_values(args: argparse.Namespace, role: str) -> dict[str, object]:
+def default_ollama_command_config(model: str) -> dict[str, object]:
     return {
+        "provider": "command",
+        "model": model,
+        "command": f"ollama run {shlex.quote(model)}",
+        "timeout_seconds": 600,
+    }
+
+
+def provider_cli_values(
+    args: argparse.Namespace,
+    role: str,
+    file_config: dict[str, object] | None = None,
+    defaults: dict[str, object] | None = None,
+) -> dict[str, object]:
+    values: dict[str, object] = {
         "provider": getattr(args, f"{role}_provider"),
         "command": getattr(args, f"{role}_command"),
         "base_url": getattr(args, f"{role}_base_url"),
@@ -319,6 +334,28 @@ def provider_cli_values(args: argparse.Namespace, role: str) -> dict[str, object
         "api_key_env": getattr(args, f"{role}_api_key_env"),
         "timeout_seconds": getattr(args, f"{role}_timeout_seconds"),
     }
+    if file_config is not None and defaults is not None:
+        add_default_ollama_command(role, values, file_config, defaults)
+    return values
+
+
+def add_default_ollama_command(
+    role: str,
+    cli_values: dict[str, object],
+    file_config: dict[str, object],
+    defaults: dict[str, object],
+) -> None:
+    role_config = file_config.get(role, {})
+    if role_config and not isinstance(role_config, dict):
+        return
+    role_values = role_config if isinstance(role_config, dict) else {}
+    provider = cli_values.get("provider") or role_values.get("provider") or defaults.get("provider")
+    command = cli_values.get("command") or role_values.get("command")
+    if provider != "command" or command:
+        return
+    model = cli_values.get("model") or role_values.get("model") or defaults.get("model")
+    if model:
+        cli_values["command"] = f"ollama run {shlex.quote(str(model))}"
 
 
 def require_tools(tools: list[str]) -> None:

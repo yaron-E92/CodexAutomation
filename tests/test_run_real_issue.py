@@ -276,6 +276,81 @@ END_UNIFIED_DIFF"""
         self.assertEqual(captured["reader"].model, "reader")
         self.assertEqual(captured["coder"].model, "coder")
 
+    def test_default_provider_configs_include_ollama_commands(self):
+        args = run_real_issue.parse_args(
+            [
+                "--repo",
+                ".",
+                "--github-repo",
+                "owner/repo",
+                "--issue",
+                "18",
+                "--out",
+                "out",
+            ]
+        )
+
+        reader, coder = run_real_issue.resolve_provider_configs(args)
+
+        self.assertEqual(reader.model, "qwen35-9b-32k")
+        self.assertEqual(reader.command, "ollama run qwen35-9b-32k")
+        self.assertEqual(coder.model, "devstral-small2-12k")
+        self.assertEqual(coder.command, "ollama run devstral-small2-12k")
+
+    def test_legacy_model_args_update_generated_ollama_commands(self):
+        args = run_real_issue.parse_args(
+            [
+                "--repo",
+                ".",
+                "--github-repo",
+                "owner/repo",
+                "--issue",
+                "18",
+                "--out",
+                "out",
+                "--reader",
+                "reader-custom",
+                "--coder",
+                "coder-custom",
+            ]
+        )
+
+        reader, coder = run_real_issue.resolve_provider_configs(args)
+
+        self.assertEqual(reader.model, "reader-custom")
+        self.assertEqual(reader.command, "ollama run reader-custom")
+        self.assertEqual(coder.model, "coder-custom")
+        self.assertEqual(coder.command, "ollama run coder-custom")
+
+    def test_explicit_command_overrides_generated_ollama_command(self):
+        args = run_real_issue.parse_args(
+            [
+                "--repo",
+                ".",
+                "--github-repo",
+                "owner/repo",
+                "--issue",
+                "18",
+                "--out",
+                "out",
+                "--reader-model",
+                "reader-custom",
+                "--reader-command",
+                "reader-cli --model reader-custom",
+                "--coder-model",
+                "coder-custom",
+                "--coder-command",
+                "coder-cli --model coder-custom",
+            ]
+        )
+
+        reader, coder = run_real_issue.resolve_provider_configs(args)
+
+        self.assertEqual(reader.model, "reader-custom")
+        self.assertEqual(reader.command, "reader-cli --model reader-custom")
+        self.assertEqual(coder.model, "coder-custom")
+        self.assertEqual(coder.command, "coder-cli --model coder-custom")
+
 
 if __name__ == "__main__":
     unittest.main()

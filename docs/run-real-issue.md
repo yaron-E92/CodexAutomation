@@ -34,11 +34,7 @@ scripts/run-real-issue.sh \
   --github-repo owner/AutoDev \
   --issue 18 \
   --mode implement \
-  --out .autodev-runs/issue-18 \
-  --reader-provider command \
-  --reader-command "ollama run qwen35-9b-32k" \
-  --coder-provider command \
-  --coder-command "ollama run devstral-small2-12k"
+  --out .autodev-runs/issue-18
 ```
 
 ## Next Issue
@@ -85,9 +81,18 @@ reader provider: command
 coder provider: command
 reader model: qwen35-9b-32k
 coder model: devstral-small2-12k
+reader command: ollama run qwen35-9b-32k
+coder command: ollama run devstral-small2-12k
 ```
 
-For `command`, provide a command. The prompt is passed on stdin and stdout is treated as the model response.
+For `command`, the default and model-name-only CLI forms generate `ollama run <model>` commands. The prompt is passed on stdin and stdout is treated as the model response.
+
+```bash
+--reader qwen35-9b-32k
+--coder devstral-small2-12k
+```
+
+Provide an explicit command only when overriding the default Ollama mapping.
 
 ```bash
 --reader-provider command --reader-command "ollama run qwen35-9b-32k"
