@@ -274,7 +274,7 @@ END_UNIFIED_DIFF"""
 
         self.assertEqual(code, 0)
         self.assertEqual(captured["reader"].model, "reader")
-        self.assertEqual(captured["coder"].model, "reader")
+        self.assertEqual(captured["coder"].model, "coder")
 
 
 if __name__ == "__main__":

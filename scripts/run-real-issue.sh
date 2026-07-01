@@ -27,8 +27,14 @@ if ! command -v gh >/dev/null 2>&1; then
   exit 127
 fi
 
-script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-repo_root="$(cd -- "$script_dir/.." && pwd)"
+script_path="${BASH_SOURCE[0]}"
+while [[ -L "$script_path" ]]; do
+  script_dir="$(cd -- "$(dirname -- "$script_path")" && pwd)"
+  script_path="$(readlink -- "$script_path")"
+  [[ "$script_path" != /* ]] && script_path="$script_dir/$script_path"
+done
+scripts_dir="$(cd -- "$(dirname -- "$script_path")" && pwd)"
+repo_root="$(cd -- "$scripts_dir/.." && pwd)"
 
 if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
   usage

@@ -22,8 +22,17 @@ foreach ($required in @("python", "gh")) {
     }
 }
 
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$RepoRoot = Resolve-Path (Join-Path $ScriptDir "..")
+$ScriptPath = $MyInvocation.MyCommand.Path
+$ScriptItem = Get-Item -LiteralPath $ScriptPath
+while ($null -ne $ScriptItem.Target) {
+    $TargetPath = $ScriptItem.Target
+    if (-not [System.IO.Path]::IsPathRooted($TargetPath)) {
+        $TargetPath = Join-Path $ScriptItem.DirectoryName $TargetPath
+    }
+    $ScriptItem = Get-Item -LiteralPath $TargetPath
+}
+$ScriptsDir = $ScriptItem.DirectoryName
+$RepoRoot = Resolve-Path (Join-Path $ScriptsDir "..")
 
 if ($Arguments.Count -gt 0 -and ($Arguments[0] -eq "--help" -or $Arguments[0] -eq "-h")) {
     Show-Usage

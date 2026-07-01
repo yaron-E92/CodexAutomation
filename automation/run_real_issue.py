@@ -129,7 +129,7 @@ def run(
         ensure_issue_branch(repo, branch_name, out_stream)
 
         area_out = out_dir / "area-reader-debug"
-        run_area_reader(repo, issue_text, reader_config, reader_config, area_out, out_stream)
+        run_area_reader(repo, issue_text, reader_config, coder_config, area_out, out_stream)
         write_operational_outputs(issue_text, area_out, out_dir, args.debug_artifacts)
 
         if args.mode == "plan-only":
